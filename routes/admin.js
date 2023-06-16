@@ -36,10 +36,10 @@ const getAdminDetails = (req, res)=>{
 
 const addAdminEntry = (req, res)=> {
     try{
-        const {name, start_time, end_time, time_slots_available, car_type, price, number_of_slots} = req.body;
-        pool.query(queries.addAdminQuery, [name, start_time, end_time, time_slots_available, car_type, price, number_of_slots], (error, result) => {
+        const {admin_name, slot_date, time_slots_available, car_type, price, number_of_slots,cancellation_fee} = req.body;
+        pool.query(queries.addAdminQuery, [admin_name, slot_date, time_slots_available, car_type, price, number_of_slots,cancellation_fee], (error, result) => {
             if (!error) {
-                res.status(200).json(result.rows);
+                res.status(200).json(result);
             }
             else {
                 console.log(error.message);
@@ -55,13 +55,13 @@ const addAdminEntry = (req, res)=> {
 const modifyAdminEntry = (req, res)=> {
     try{
         const id = parseInt(req.params.id);
-        const {name, start_time, end_time, time_slots_available, car_type, price, number_of_slots} = req.body;
+        const {admin_name, slot_date, time_slots_available, car_type, price, number_of_slots,cancellation_fee} = req.body;
         pool.query(queries.getAdminById, [id], (error, result)=>{
             const NoAdminFound =! result.rows.length;
             if(NoAdminFound){
                 res.send("Admin not found in Database");
             }else{
-                pool.query(queries.updateAdminQuery, [name, start_time, end_time, time_slots_available, car_type, price, number_of_slots, id], (error, result)=>{
+                pool.query(queries.updateAdminQuery, [admin_name, slot_date, time_slots_available, car_type, price, number_of_slots,cancellation_fee, id], (error, result)=>{
                     if(!error){
                         res.status(200).json(result.rows);
                     }

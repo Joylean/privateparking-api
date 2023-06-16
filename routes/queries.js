@@ -1,8 +1,8 @@
-const getAdmins = `SELECT * FROM admin`;
-const getAdminById = `SELECT * FROM admin WHERE id=$1`;
-const addAdminQuery = `INSERT INTO admin (name, start_time, end_time, time_slots_available, car_type, price, number_of_slots) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
-const updateAdminQuery = `UPDATE admin SET name=$1, start_time=$2, end_time=$3, time_slots_available=$4, car_type=$5, price=$6, number_of_slots=$7 WHERE id=$8`;
-const deleteAdminById = `DELETE FROM admin WHERE id=$1`;
+const getAdmins = `SELECT * FROM admin_table`;
+const getAdminById = `SELECT * FROM admin_table WHERE id=$1`;
+const addAdminQuery = `INSERT INTO admin_table ( admin_name, slot_date, time_slots_available, car_type, price, number_of_slots,cancellation_fee) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
+const updateAdminQuery = `UPDATE admin_table SET admin_name=$1, slot_date=$2, time_slots_available=$3, car_type=$4, price=$5, number_of_slots=$6, cancellation_fee=$7 WHERE id=$8`;
+const deleteAdminById = `DELETE FROM admin_table WHERE id=$1`;
 
 const getCustomers = `SELECT * FROM customer`;
 const getCustomerById = `SELECT * FROM customer where id=$1`;
