@@ -35,32 +35,43 @@ const getCustomerDetails = (req, res)=>{
 }
 
 const addCustomerEntry = (req, res)=> {
-    const {slot, status, price, car_type, name} = req.body;
-    let insertQuery = `insert into customer(slot, status, price, car_type, name) 
-                       values('${slot}', '${status}', '${price}','${car_type}','${name}')`
+    try{
+        const {customer_name, slot_date, time_slot, car_type, slot_status, admin_id} = req.body;
+        console.log(req.body);
+        pool.query(queries.addCustomerQuery, [customer_name, slot_date, time_slot, car_type, slot_status, admin_id], (error, result)=>{
+            console.log(result);
+            if(!error){
+                pool.query(queries.updateAdminQueryAfterCustAdded, [admin_id], (err, resu)=>{
+                    if(!err){
+                        res.status(200).json(resu.rows);
+                    }else{
+                        console.log(error.message);
+                        throw error;
+                    }
+                })
+            }
+            else{
+                console.log(error.message);
+                throw error; 
+             }
+        })
+        pool.end;
+    }catch(err){
+        console.log(err.message);
+    }
 
-    pool.query(queries.addCustomerQuery, [slot, status, price, car_type, name], (error, result)=>{
-        if(!error){
-            res.status(200).json(result.rows);
-        }
-        else{
-            console.log(error.message);
-            throw error; 
-         }
-    })
-    pool.end;
 }
 
 const modifyCustomerEntry = (req, res)=> {
     try{
         const id = parseInt(req.params.id);
-        let {slot, status, price, car_type, name}= req.body;
+        const {customer_name, slot_date, time_slot, car_type, slot_status, admin_id}= req.body;
         pool.query(queries.getCustomerById, [id], (error, result)=>{
             const NoCustomerFound =! result.rows.length;
             if(NoCustomerFound){
                 res.send("Customer not found in Database");
             }else{
-                pool.query(queries.updateCustomerQuery, [slot, status, price, car_type, name, id], (error, result)=>{
+                pool.query(queries.updateCustomerQuery, [customer_name, slot_date, time_slot, car_type, slot_status, admin_id, id], (error, result)=>{
                     if(!error){
                         res.status(200).json(result.rows);
                     }
