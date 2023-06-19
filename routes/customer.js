@@ -19,7 +19,7 @@ const getAllCustomerDetails =  (req, res)=>{
 
 const getCustomerDetails = (req, res)=>{
     try{
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         pool.query(queries.getCustomerById,[id], (error, result)=>{
             if(!error){
                 res.status(200).json(result.rows);
@@ -64,26 +64,18 @@ const addCustomerEntry = (req, res)=> {
 
 const modifyCustomerEntry = (req, res)=> {
     try{
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         const {customer_name, slot_date, time_slot, car_type, slot_status, admin_id}= req.body;
-        pool.query(queries.getCustomerById, [id], (error, result)=>{
-            const NoCustomerFound =! result.rows.length;
-            if(NoCustomerFound){
-                res.send("Customer not found in Database");
-            }else{
-                pool.query(queries.updateCustomerQuery, [customer_name, slot_date, time_slot, car_type, slot_status, admin_id, id], (error, result)=>{
-                    if(!error){
-                        res.status(200).json(result.rows);
-                    }
-                    else{
-                        console.log(error.message);
-                        throw error; 
-                    }
-                })
+        pool.query(queries.updateCustomerQuery, [customer_name, slot_date, time_slot, car_type, slot_status, admin_id, id], (error, result)=>{
+            if(!error){
+                res.status(200).json(result.rows);
+            }
+            else{
+                console.log(error.message);
+                throw error; 
             }
         })
-
-    pool.end;
+        pool.end;
     }catch(err){
         console.log(err.message);
     }
@@ -92,21 +84,13 @@ const modifyCustomerEntry = (req, res)=> {
 
 const deleteCustomerEntry = (req, res)=> {
     try{
-        const id = parseInt(req.params.id);
-        pool.query(queries.getCustomerById,[id], (error, result)=>{
-            const NoCustomerFound =! result.rows.length;
-            if(NoCustomerFound){
-                res.send("Customer not found in Database");
+        const id = req.params.id;
+        pool.query(queries.deleteCustomerById,[id], (error, result)=>{
+            if(error){
+                throw error;
             }
             else{ 
-                pool.query(queries.deleteCustomerById,[id], (error, result)=>{
-                    if(error){
-                        throw error;
-                    }
-                    else{ 
-                        res.status(200).send("Customer Data deleted"); 
-                    }
-                }) 
+                res.status(200).send(result.rows); 
             }
         })
         pool.end;
